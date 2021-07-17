@@ -1,0 +1,1 @@
+CREATE TABLE Orders(id SERIAL PRIMARY KEY, product_id BIGINT REFERENCES Products(id), quantity numeric, users_id BIGINT REFERENCES users(id), status VARCHAR(15));
