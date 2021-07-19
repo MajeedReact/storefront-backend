@@ -21,6 +21,7 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
   const user: users = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
+    email: req.body.email,
     user_pass: req.body.user_pass,
   };
   try {
@@ -69,7 +70,7 @@ const users_route = (app: express.Application) => {
   //get specific user by id
   app.get("/users/:id", authJWT.verifyToken, getUser);
   //create a user
-  app.post("/users", authJWT.verifyToken, createUser);
+  app.post("/users", createUser);
   //remove a user
   app.delete("/users", authJWT.verifyToken, destroy);
 };

@@ -11,7 +11,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [x] Index `/prodcuts` METHOD: get
 - [x] Show `/products/:id` METHOD: get
 - [x] Create [token required] `/products` METHOD: post
-- [] [OPTIONAL] Top 5 most popular products
+- [ ] [OPTIONAL] Top 5 most popular products
 - [x] [OPTIONAL] Products by category (args: product category) `/products/categories/${nameOfCategory}` METHOD: get
 
 #### Users
@@ -30,7 +30,8 @@ These are the notes from a meeting with the frontend developer that describe wha
 #### Product
 
 - [x] id: SERIAL PRIMARY KEY
-- [x] name: numeric
+- [x] name: VARCHAR
+- [x] price: numeric
 - [x] [OPTIONAL] category: VARCHAR
 
 #### User
@@ -38,12 +39,19 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [x] id: SERIAL PRIMARY KEY
 - [x] firstName: VARCHAR
 - [x] lastName: VARCHAR
+- [x] email: VARCHAR
 - [x] password: VARCHAR
 
 #### Orders
 
-- [x] id: SERIAL PRIMARY KEY
-- [x] id of each product in the order: BIGINT
-- [x] quantity of each product in the order: numeric
-- [x] user_id: BIGINT
+- [x] order_id: SERIAL PRIMARY KEY
+- [x] user_id: BIGINT REFERENCES users(id)
 - [x] status of order (active or complete): VARCHAR
+
+#### Order_details
+
+- [x] id: SERIAL PRIMARY KEY
+- [x] product_id: BIGINT REFERENCES Products(id)
+- [x] order_id: BIGINT REFERENCES order_items(id)
+- [x] quantity: int
+- [x] created_at: DATE

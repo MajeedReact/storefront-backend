@@ -8,6 +8,7 @@ export type users = {
   id?: Number;
   firstname: string;
   lastname: string;
+  email: string;
   user_pass: string;
 };
 
@@ -33,7 +34,7 @@ export class usersStore {
       const conn = await client.connect();
 
       const sql =
-        "INSERT INTO users(firstname, lastname, user_pass) VALUES ($1, $2, $3) RETURNING *";
+        "INSERT INTO users(firstname, lastname, email, user_pass) VALUES ($1, $2, $3, $4) RETURNING *";
 
       //hashing password with salt and pepper
       const hash = bcrypt.hashSync(
@@ -41,7 +42,12 @@ export class usersStore {
         Number(process.env.SALT_ROUNDS)
       );
 
-      const result = await conn.query(sql, [u.firstname, u.lastname, hash]);
+      const result = await conn.query(sql, [
+        u.firstname,
+        u.lastname,
+        u.email,
+        hash,
+      ]);
       const user = result.rows[0];
       conn.release();
 
@@ -58,11 +64,12 @@ export class usersStore {
       const conn = await client.connect();
 
       const sql =
-        "INSERT INTO users(firstname, lastname, user_pass) VALUES ($1, $2, $3) RETURNING *";
+        "INSERT INTO users(firstname, lastname, email, user_pass) VALUES ($1, $2, $3, $4) RETURNING *";
 
       const result = await conn.query(sql, [
         u.firstname,
         u.lastname,
+        u.email,
         u.user_pass,
       ]);
       const user = result.rows[0];

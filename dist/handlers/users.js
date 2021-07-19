@@ -22,6 +22,7 @@ const createUser = async (req, res) => {
     const user = {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
+        email: req.body.email,
         user_pass: req.body.user_pass,
     };
     try {
@@ -66,7 +67,7 @@ const users_route = (app) => {
     //get specific user by id
     app.get("/users/:id", authJWT_1.default.verifyToken, getUser);
     //create a user
-    app.post("/users", authJWT_1.default.verifyToken, createUser);
+    app.post("/users", createUser);
     //remove a user
     app.delete("/users", authJWT_1.default.verifyToken, destroy);
 };

@@ -53,27 +53,25 @@ it("it should create a user", async () => {
     const result = await user.createWithoutHash({
         firstname: "Jeff",
         lastname: "Bezos",
+        email: "test@test.com",
         user_pass: "jeff123",
     });
     expect(result).toEqual({
         id: 1,
         firstname: "Jeff",
         lastname: "Bezos",
+        email: "test@test.com",
         user_pass: "jeff123",
     });
 });
 describe("CRUD Order model", () => {
     it("It should create an order", async () => {
         const result = await store.createOrder({
-            product_id: "1",
-            quantity: "1",
             users_id: "1",
             status: "Active",
         });
         expect(result).toEqual({
             id: 1,
-            product_id: "1",
-            quantity: "1",
             users_id: "1",
             status: "Active",
         });
@@ -83,16 +81,24 @@ describe("CRUD Order model", () => {
         expect(result).toEqual([
             {
                 id: 1,
-                product_id: "1",
-                quantity: "1",
                 users_id: "1",
                 status: "Active",
             },
         ]);
     });
     it("It should retrive all orders that are completed by user", async () => {
+        const status = "Complete";
+        const order_id = 1;
+        const users_id = 1;
+        await store.update(status, order_id, users_id);
         const result = await store.completedOrders("1");
-        expect(result).toEqual([]);
+        expect(result).toEqual([
+            {
+                id: 1,
+                users_id: "1",
+                status: "Complete",
+            },
+        ]);
     });
 });
 describe("Orders Endpoint", () => {

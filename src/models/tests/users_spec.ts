@@ -32,6 +32,7 @@ describe("CRUD user Model", () => {
         id: 1,
         firstname: "Jeff",
         lastname: "Bezos",
+        email: "test@test.com",
         user_pass: "jeff123",
       },
     ]);
@@ -44,6 +45,7 @@ describe("CRUD user Model", () => {
       id: 1,
       firstname: "Jeff",
       lastname: "Bezos",
+      email: "test@test.com",
       user_pass: "jeff123",
     });
   });
@@ -60,8 +62,8 @@ describe("User Endpoints", () => {
     expect(result.status).toBe(401);
   });
 
-  it("Create method will result in status 401 for not having a token", async () => {
+  it("Create method will result in status 200", async () => {
     const result = await request.post("/users");
-    expect(result.status).toBe(401);
+    expect(result.status).toBe(200);
   });
 });

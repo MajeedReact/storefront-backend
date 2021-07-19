@@ -16,8 +16,8 @@ const getUserOrders = async (req: Request, res: Response): Promise<void> => {
 const showOrder = async (req: Request, res: Response): Promise<void> => {
   try {
     const orders = await store.show(
-      req.body.users_id,
-      req.params.id as unknown as number
+      Number(req.body.users_id),
+      Number(req.params.id)
     );
     res.json(orders);
   } catch (err) {
@@ -35,14 +35,34 @@ const ordersCompleted = async (req: Request, res: Response) => {
 
 const createOrder = async (req: Request, res: Response): Promise<void> => {
   try {
-    const orders: order = {
-      product_id: req.body.product_id,
-      quantity: req.body.quantity,
+    const order: order = {
       users_id: req.body.users_id,
       status: req.body.status,
     };
 
-    const newOrder = await store.createOrder(orders);
+    const newOrder = await store.createOrder(order);
+    res.json(newOrder);
+  } catch (err) {
+    throw new Error(`An error occured adding your order: ${err}`);
+  }
+};
+
+const createOrderDetails = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const product_id = req.body.product_id;
+    const order_id = Number(req.params.id);
+    const quantity = req.body.quantity;
+    const created_at = new Date();
+    const newOrder = await store.createOrderDetails(
+      product_id,
+      order_id,
+      quantity,
+      created_at
+    );
+
     res.json(newOrder);
   } catch (err) {
     throw new Error(`An error occured adding your order: ${err}`);
@@ -51,24 +71,19 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
 
 const updateOrder = async (req: Request, res: Response): Promise<void> => {
   try {
-    const orders: order = {
-      id: Number(req.params.id),
-      product_id: req.body.product_id,
-      quantity: req.body.quantity,
-      users_id: req.body.users_id,
-      status: req.body.status,
-    };
+    const status: string = req.body.status;
+    const order_id = Number(req.params.id);
+    const users_id = req.body.users_id;
 
     //checks order status if it is complete then it cannot be updated
-    const checkStatus = await store.show(orders.users_id, orders.id as number);
+    const checkStatus = await store.show(users_id, order_id);
     if (checkStatus.status == "Complete") {
       res.status(401);
       res.json(`Order is already complete`);
       return;
     }
 
-    const newOrder = await store.update(orders);
-    console.log(newOrder);
+    const newOrder = await store.update(status, order_id, users_id);
     res.json(newOrder);
   } catch (err) {
     throw new Error(`An error occured updating your order: ${err}`);
@@ -76,7 +91,7 @@ const updateOrder = async (req: Request, res: Response): Promise<void> => {
 };
 
 const orders_route = (app: express.Application) => {
-  //gets all user orders that are active
+  //gets all user orders
   app.get("/orders", authJWT.verifyToken, authJWT.auth, getUserOrders);
   //gets all user orders that are complete
   app.get(
@@ -88,7 +103,9 @@ const orders_route = (app: express.Application) => {
   //gets specific user order
   app.get("/orders/:id", authJWT.verifyToken, authJWT.auth, showOrder);
   //create an order
-  app.post("/orders", authJWT.verifyToken, createOrder);
+  app.post("/orders", authJWT.verifyToken, authJWT.auth, createOrder);
+  //create order details
+  app.post("/orders/:id/details", authJWT.verifyToken, createOrderDetails);
   //update users order
   app.put("/orders/:id", authJWT.verifyToken, authJWT.auth, updateOrder);
 };
