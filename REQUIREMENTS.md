@@ -40,7 +40,9 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [x] [OPTIONAL] category: VARCHAR
 
 Schema for product
-`CREATE TABLE Products(id SERIAL PRIMARY KEY, name VARCHAR (50), price numeric, category VARCHAR);`
+`CREATE TABLE Products(id SERIAL PRIMARY KEY, name VARCHAR (50), price numeric, category VARCHAR);` \
+![products](https://user-images.githubusercontent.com/53359513/126519215-e4490701-934b-455b-a357-20b8a1c5a80b.jpg)
+
 
 #### Users
 
@@ -51,7 +53,8 @@ Schema for product
 - [x] user_pass: VARCHAR
 
 Schema for users
-`CREATE TABLE users(id SERIAL PRIMARY KEY, firstname VARCHAR, lastname VARCHAR, email VARCHAR, user_pass VARCHAR);`
+`CREATE TABLE users(id SERIAL PRIMARY KEY, firstname VARCHAR, lastname VARCHAR, email VARCHAR, user_pass VARCHAR);` \
+![users](https://user-images.githubusercontent.com/53359513/126519243-b625ab6b-4dc7-47f1-a8de-b92a6dbaf0c0.jpg)
 
 #### Orders
 
@@ -60,7 +63,8 @@ Schema for users
 - [x] status of order (active or complete): VARCHAR
 
 Schema for orders
-`CREATE TABLE orders(id SERIAL PRIMARY KEY, users_id BIGINT REFERENCES users(id), status VARCHAR(15));`
+`CREATE TABLE orders(id SERIAL PRIMARY KEY, users_id BIGINT REFERENCES users(id), status VARCHAR(15));` \
+![orders](https://user-images.githubusercontent.com/53359513/126519273-c5e5a8d0-5490-40bd-a527-8f53044c60f5.jpg)
 
 #### Order_details
 
@@ -71,4 +75,6 @@ Schema for orders
 - [x] created_at: DATE
 
 Schema for order_details
-`CREATE TABLE order_details(id SERIAL PRIMARY KEY, product_id BIGINT REFERENCES Products(id), order_id BIGINT REFERENCES orders(id), quantity numeric, created_at DATE);`
+`CREATE TABLE order_details(id SERIAL PRIMARY KEY, product_id BIGINT REFERENCES Products(id), order_id BIGINT REFERENCES orders(id), quantity numeric, created_at DATE);` \
+![order_details](https://user-images.githubusercontent.com/53359513/126519287-500b15a3-2e9e-4afb-8d45-a0aac925082f.jpg)
+
