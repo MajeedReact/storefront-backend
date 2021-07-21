@@ -30,9 +30,12 @@ const auth = (req: Request, res: Response, next: Function): void => {
       process.env.TOKEN_SECRET as Secret
     ) as jwt.JwtPayload;
 
+    console.log(req.body.users_id);
+    console.log(decode.user.id);
     if (decode.user.id != req.body.users_id) {
       throw new Error("User id does not match");
     }
+
     next();
   } catch (err) {
     res.status(401);

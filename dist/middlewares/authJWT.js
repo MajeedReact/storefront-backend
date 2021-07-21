@@ -24,6 +24,8 @@ const auth = (req, res, next) => {
         const header = req.headers.authorization;
         const token = header?.split(" ")[1];
         const decode = jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET);
+        console.log(req.body.users_id);
+        console.log(decode.user.id);
         if (decode.user.id != req.body.users_id) {
             throw new Error("User id does not match");
         }

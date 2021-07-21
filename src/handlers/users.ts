@@ -39,6 +39,32 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+//this method for testing purposes do not use this in production
+const createUserWithoutHash = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const user: users = {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
+    user_pass: req.body.user_pass,
+  };
+  try {
+    const newUser = await store.createWithoutHash(user);
+    res.json(`Sucessfully registered ${newUser.firstname}`);
+
+    //assign a token for new registered users
+    const token = jwt.sign(
+      { user: newUser },
+      process.env.TOKEN_SECRET as Secret
+    );
+    console.log(token);
+  } catch (err) {
+    throw new Error(`An error occured creating your account: ${err}`);
+  }
+};
+
 const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
     //example  http://localhost:3000/users/1
@@ -70,9 +96,11 @@ const users_route = (app: express.Application) => {
   //get specific user by id
   app.get("/users/:id", authJWT.verifyToken, getUser);
   //create a user
-  app.post("/users", createUser);
+  app.post("/users", authJWT.verifyToken, createUser);
   //remove a user
   app.delete("/users", authJWT.verifyToken, destroy);
+  //route for testing
+  app.post("/users/test", authJWT.verifyToken, createUserWithoutHash);
 };
 
 export default users_route;

@@ -41,7 +41,7 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
     };
 
     const newOrder = await store.createOrder(order);
-    res.json(newOrder);
+    res.json(`Sucessfully created order ${newOrder.id}`);
   } catch (err) {
     throw new Error(`An error occured adding your order: ${err}`);
   }
@@ -53,7 +53,7 @@ const createOrderDetails = async (
 ): Promise<void> => {
   try {
     const product_id = req.body.product_id;
-    const order_id = Number(req.params.id);
+    const order_id = req.params.id;
     const quantity = req.body.quantity;
     const created_at = new Date();
     const newOrder = await store.createOrderDetails(

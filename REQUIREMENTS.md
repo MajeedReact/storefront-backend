@@ -13,17 +13,22 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [x] Create [token required] `/products` METHOD: post
 - [ ] [OPTIONAL] Top 5 most popular products
 - [x] [OPTIONAL] Products by category (args: product category) `/products/categories/${nameOfCategory}` METHOD: get
+- [x] [Extra] Delete a product (args: order_id) [token required] `/products` METHOD: delete
 
 #### Users
 
-- [x] Index [token required] /users METHOD: get
-- [x] Show [token required] /users/id METHOD: get
-- [x] Create N[token required] /users METHOD: post
+- [x] Index [token required] `/users` METHOD: get
+- [x] Show [token required] `/users/id` METHOD: get
+- [x] Create [token required] `/users` METHOD: post
+- [x] [Extra] Delete user [token required] `/users` METHOD: delete
 
 #### Orders
 
-- [x] Current Order by user (args: user id)[token required] /orders METHOD: get. **_Note it will only display orders that are active_**
-- [x] [OPTIONAL] Completed Orders by user (args: user id)[token required] /orders/complete METHOD: get
+- [x] Current Order by user (args: user id)[token required] `/orders` METHOD: get. **_Note it will only display orders that are active_**
+- [x] [OPTIONAL] Completed Orders by user (args: user id)[token required] `/orders/complete` METHOD: get
+- [x] [Extra] Change order status `/orders/:id` METHOD: put
+- [x] Create order details `/orders/:id/details` METHOD: post
+- [x] [Extra] Update order (args: user_id, order_id) `/orders/:id` METHOD: put
 
 ## Data Shapes
 
@@ -34,19 +39,28 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [x] price: numeric
 - [x] [OPTIONAL] category: VARCHAR
 
-#### User
+Schema for product
+`CREATE TABLE Products(id SERIAL PRIMARY KEY, name VARCHAR (50), price numeric, category VARCHAR);`
+
+#### Users
 
 - [x] id: SERIAL PRIMARY KEY
 - [x] firstName: VARCHAR
 - [x] lastName: VARCHAR
 - [x] email: VARCHAR
-- [x] password: VARCHAR
+- [x] user_pass: VARCHAR
+
+Schema for users
+`CREATE TABLE users(id SERIAL PRIMARY KEY, firstname VARCHAR, lastname VARCHAR, email VARCHAR, user_pass VARCHAR);`
 
 #### Orders
 
 - [x] order_id: SERIAL PRIMARY KEY
 - [x] user_id: BIGINT REFERENCES users(id)
 - [x] status of order (active or complete): VARCHAR
+
+Schema for orders
+`CREATE TABLE orders(id SERIAL PRIMARY KEY, users_id BIGINT REFERENCES users(id), status VARCHAR(15));`
 
 #### Order_details
 
@@ -55,3 +69,6 @@ These are the notes from a meeting with the frontend developer that describe wha
 - [x] order_id: BIGINT REFERENCES order_items(id)
 - [x] quantity: int
 - [x] created_at: DATE
+
+Schema for order_details
+`CREATE TABLE order_details(id SERIAL PRIMARY KEY, product_id BIGINT REFERENCES Products(id), order_id BIGINT REFERENCES orders(id), quantity numeric, created_at DATE);`

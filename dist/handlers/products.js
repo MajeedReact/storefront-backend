@@ -43,7 +43,6 @@ const showProduct = async (req, res) => {
 const displayByCategory = async (req, res) => {
     //example:  /products/categories/motherboards
     const product = await store.displayByCategory(req.params.category);
-    console.log(req.params.category);
     res.json(product);
 };
 const destroy = async (req, res) => {

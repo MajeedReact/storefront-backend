@@ -35,38 +35,62 @@ export class orderStore {
   //create order
 
   async createOrder(o: order): Promise<order> {
-    const conn = await client.connect();
-    const sql =
-      "INSERT INTO orders(users_id, status) VALUES ($1, $2) RETURNING *";
-    const result = await conn.query(sql, [o.users_id, o.status]);
-    const order = result.rows[0];
-    conn.release();
+    try {
+      const conn = await client.connect();
+      const sql =
+        "INSERT INTO orders(users_id, status) VALUES ($1, $2) RETURNING *";
+      const result = await conn.query(sql, [o.users_id, o.status]);
+      const order = result.rows[0];
+      conn.release();
 
-    return order;
+      return order;
+    } catch (err) {
+      throw new Error(`An Error occured creating your order: ${err}`);
+    }
   }
 
   //create order details
   async createOrderDetails(
     product_id: string,
-    order_id: number,
-    quantity: number,
+    order_id: string,
+    quantity: string,
     created_at: Date
-  ): Promise<order> {
-    const conn = await client.connect();
-    const sql =
-      "INSERT INTO order_details(product_id, order_id, quantity, created_at) VALUES ($1, $2, $3, $4) RETURNING *";
-    const result = await conn.query(sql, [
-      product_id,
-      order_id,
-      quantity,
-      created_at,
-    ]);
+  ): Promise<{
+    id: number;
+    product_id: string;
+    order_id: string;
+    quantity: string;
+    created_at: Date;
+  }> {
+    try {
+      const conn = await client.connect();
 
-    conn.release();
+      const sqlCheck = "SELECT * FROM orders WHERE id = $1";
+      const resultCheck = await conn.query(sqlCheck, [order_id]);
+      const order = resultCheck.rows[0];
 
-    const newOrder = result.rows[0];
+      if (order.status === "Complete") {
+        throw new Error(`Could not add product to a complete order`);
+      }
+      const sql =
+        "INSERT INTO order_details(product_id, order_id, quantity, created_at) VALUES ($1, $2, $3, $4) RETURNING *";
+      const result = await conn.query(sql, [
+        product_id,
+        order_id,
+        quantity,
+        created_at,
+      ]);
 
-    return newOrder;
+      conn.release();
+
+      const newOrder = result.rows[0];
+
+      return newOrder;
+    } catch (err) {
+      throw new Error(
+        `An Error occured adding a product into your order: ${err}`
+      );
+    }
   }
 
   //get all the orders that were completed by the specific user
@@ -85,7 +109,7 @@ export class orderStore {
   async update(
     status: string,
     order_id: number,
-    users_id: number
+    users_id: string
   ): Promise<order> {
     try {
       const sql =

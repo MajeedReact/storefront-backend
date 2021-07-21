@@ -1,8 +1,5 @@
-import { products, productsStore } from "../products";
-import app from "../../server";
-import supertest from "supertest";
+import { products, productsStore } from "../../src/models/products";
 
-const request = supertest(app);
 const store = new productsStore();
 
 describe("products Model", () => {
@@ -28,11 +25,31 @@ describe("products Model", () => {
 });
 
 describe("CRUD product Model", () => {
+  it("it should create a product", async () => {
+    const result = await store.create({
+      name: "GTX 1050 TI",
+      price: "150",
+      category: "graphic-cards",
+    });
+    expect(result).toEqual({
+      id: 2,
+      name: "GTX 1050 TI",
+      price: "150",
+      category: "graphic-cards",
+    });
+  });
+
   it("Should retrive all products", async () => {
     const result = await store.index();
     expect(result).toEqual([
       {
         id: 1,
+        name: "GTX 1050 TI",
+        price: "150",
+        category: "graphic-cards",
+      },
+      {
+        id: 2,
         name: "GTX 1050 TI",
         price: "150",
         category: "graphic-cards",
@@ -50,26 +67,23 @@ describe("CRUD product Model", () => {
       category: "graphic-cards",
     });
   });
-});
 
-describe("Products Endpoints", () => {
-  it("Index method will result in 200 status ", async () => {
-    const result = await request.get("/products");
-    expect(result.status).toBe(200);
-  });
-
-  it("Show method will result in status 200", async () => {
-    const result = await request.get("/products/1");
-    expect(result.status).toBe(200);
-  });
-
-  it("Create method will result in status 401 for not having a token", async () => {
-    const result = await request.post("/products");
-    expect(result.status).toBe(401);
-  });
-
-  it("Display by category method will result in status 200", async () => {
-    const result = await request.get("/products/categories/graphic-cards");
-    expect(result.status).toBe(200);
+  it("Should retrive all products from a specific category", async () => {
+    const result = await store.displayByCategory("graphic-cards");
+    console.log(result);
+    expect(result).toEqual([
+      {
+        id: 1,
+        name: "GTX 1050 TI",
+        price: "150",
+        category: "graphic-cards",
+      },
+      {
+        id: 2,
+        name: "GTX 1050 TI",
+        price: "150",
+        category: "graphic-cards",
+      },
+    ]);
   });
 });
