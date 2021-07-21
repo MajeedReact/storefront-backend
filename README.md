@@ -50,3 +50,9 @@ TOKEN_SECRET=udacity-fire
 - run test to start jasmine test
 - run start to start server
 - run node to start the compiled javascript server
+
+
+# Jasmine test result
+
+![test](https://user-images.githubusercontent.com/53359513/126519485-1bd440d0-4907-473a-8098-b64e01f6bbc6.jpg)
+
