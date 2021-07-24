@@ -1,8 +1,6 @@
 import app from "../../src/server";
 import supertest from "supertest";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { token } from "../helpers/token";
 
 const request = supertest(app);
 
@@ -21,7 +19,7 @@ describe("User Endpoints", () => {
   it("Index method should get all users", async () => {
     const result = await request
       .get("/users")
-      .set("Authorization", "Bearer " + process.env.JWT_TOKEN);
+      .set("Authorization", "Bearer " + token);
     expect(result.status).toBe(200);
     expect(result.body).toEqual([
       {
@@ -42,7 +40,7 @@ describe("User Endpoints", () => {
   it("Show method will result in status 200 for having a token", async () => {
     const result = await request
       .get("/users/1")
-      .set("Authorization", "Bearer " + process.env.JWT_TOKEN);
+      .set("Authorization", "Bearer " + token);
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       id: 1,

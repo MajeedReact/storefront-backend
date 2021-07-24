@@ -8,7 +8,10 @@
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
     "build": "npx tsc",
     "migrate": "db-migrate --env test up && db-migrate up",
-    "test": "ENV=test db-migrate --env test up && jasmine-ts && db-migrate db:drop test"
+    "up-test": "db-migrate up --env test",
+    "create-test-database": "db-migrate db:create test",
+    "drop-test-database": "db-migrate db:drop test",
+    "test": " npm run create-test-database && npm run up-test && cross-env ENV=test jasmine-ts && npm run drop-test-database"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +37,7 @@
     "@types/nodemon": "^1.19.1",
     "@types/pg": "^8.6.1",
     "@types/supertest": "^2.0.11",
+    "cross-env": "^7.0.3",
     "jasmine": "^3.8.0",
     "jasmine-spec-reporter": "^7.0.0",
     "jasmine-ts": "^0.4.0",

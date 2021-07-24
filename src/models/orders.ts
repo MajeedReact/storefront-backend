@@ -1,4 +1,7 @@
 import client from "../database";
+import { order_detail, order_detailsStore } from "./order_details";
+
+const store = new order_detailsStore();
 
 export type order = {
   id?: Number;
@@ -55,13 +58,7 @@ export class orderStore {
     order_id: string,
     quantity: string,
     created_at: Date
-  ): Promise<{
-    id: number;
-    product_id: string;
-    order_id: string;
-    quantity: string;
-    created_at: Date;
-  }> {
+  ): Promise<order_detail> {
     try {
       const conn = await client.connect();
 
@@ -69,23 +66,18 @@ export class orderStore {
       const resultCheck = await conn.query(sqlCheck, [order_id]);
       const order = resultCheck.rows[0];
 
+      //check if order complete before inserting anything into order
       if (order.status === "Complete") {
         throw new Error(`Could not add product to a complete order`);
       }
-      const sql =
-        "INSERT INTO order_details(product_id, order_id, quantity, created_at) VALUES ($1, $2, $3, $4) RETURNING *";
-      const result = await conn.query(sql, [
+
+      const order_details = await store.create(
         product_id,
         order_id,
         quantity,
-        created_at,
-      ]);
-
-      conn.release();
-
-      const newOrder = result.rows[0];
-
-      return newOrder;
+        created_at
+      );
+      return order_details;
     } catch (err) {
       throw new Error(
         `An Error occured adding a product into your order: ${err}`
